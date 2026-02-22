@@ -27,12 +27,19 @@ Conventions:
 
 ## 3) Script Properties
 
-Set these in Apps Script -> Project Settings -> Script properties:
+The script now has defaults for this repository:
 
-- `GITHUB_OWNER`
-- `GITHUB_REPO`
-- `GITHUB_BRANCH` (example: `main`)
-- `GITHUB_PATH` (example: `data/events.json`)
+- `GITHUB_OWNER=carlamHS`
+- `GITHUB_REPO=de_book`
+- `GITHUB_BRANCH=main`
+- `GITHUB_PATH=data/events.json`
+
+You can apply these defaults from the sheet menu:
+
+- `De Book -> Setup Default GitHub Config`
+
+Required Script Property:
+
 - `GITHUB_TOKEN` (PAT with repository write access)
 
 ## 4) First Run
@@ -40,7 +47,8 @@ Set these in Apps Script -> Project Settings -> Script properties:
 From Apps Script editor:
 
 1. Run `validateSheet`
-2. Run `publishToGitHub`
+2. Run `setupDefaultGitHubConfig` (or use menu action)
+3. Run `publishToGitHub`
 
 Approve permissions when prompted.
 

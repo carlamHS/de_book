@@ -11,12 +11,19 @@
 
 const EVENTS_SHEET = 'events';
 const REQUIRED_COLUMNS = ['id', 'year', 'title', 'actors', 'regions', 'summary', 'lat', 'lng', 'sources'];
+const DEFAULT_GITHUB_CONFIG = {
+  owner: 'carlamHS',
+  repo: 'de_book',
+  branch: 'main',
+  path: 'data/events.json'
+};
 
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('De Book')
     .addItem('Validate Rows', 'validateSheet')
     .addItem('Preview JSON (Log)', 'previewJson')
+    .addItem('Setup Default GitHub Config', 'setupDefaultGitHubConfig')
     .addItem('Publish events.json to GitHub', 'publishToGitHub')
     .addToUi();
 }
@@ -71,14 +78,16 @@ function doGet() {
 
 function publishToGitHub() {
   const props = PropertiesService.getScriptProperties();
-  const owner = props.getProperty('GITHUB_OWNER');
-  const repo = props.getProperty('GITHUB_REPO');
-  const branch = props.getProperty('GITHUB_BRANCH') || 'main';
-  const path = props.getProperty('GITHUB_PATH') || 'data/events.json';
+  const owner = props.getProperty('GITHUB_OWNER') || DEFAULT_GITHUB_CONFIG.owner;
+  const repo = props.getProperty('GITHUB_REPO') || DEFAULT_GITHUB_CONFIG.repo;
+  const branch = props.getProperty('GITHUB_BRANCH') || DEFAULT_GITHUB_CONFIG.branch;
+  const path = props.getProperty('GITHUB_PATH') || DEFAULT_GITHUB_CONFIG.path;
   const token = props.getProperty('GITHUB_TOKEN');
 
-  if (!owner || !repo || !token) {
-    throw new Error('Set Script Properties: GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN (optional GITHUB_BRANCH/GITHUB_PATH).');
+  if (!token) {
+    throw new Error(
+      'Missing Script Property: GITHUB_TOKEN. Create a GitHub token with Contents write access, then set GITHUB_TOKEN in Apps Script.'
+    );
   }
 
   const payload = buildPayload_();
@@ -116,6 +125,19 @@ function publishToGitHub() {
   }
 
   SpreadsheetApp.getUi().alert('Published to GitHub successfully.');
+}
+
+function setupDefaultGitHubConfig() {
+  const props = PropertiesService.getScriptProperties();
+  props.setProperties({
+    GITHUB_OWNER: DEFAULT_GITHUB_CONFIG.owner,
+    GITHUB_REPO: DEFAULT_GITHUB_CONFIG.repo,
+    GITHUB_BRANCH: DEFAULT_GITHUB_CONFIG.branch,
+    GITHUB_PATH: DEFAULT_GITHUB_CONFIG.path
+  }, false);
+  SpreadsheetApp.getUi().alert(
+    'Default GitHub config saved. Please set GITHUB_TOKEN in Script Properties, then run Publish.'
+  );
 }
 
 function buildPayload_() {
