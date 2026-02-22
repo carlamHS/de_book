@@ -1,0 +1,388 @@
+{
+  "meta": {
+    "project": "De Book",
+    "schema_version": "1.0.0",
+    "description": "Space-time historical event dataset",
+    "generated_at": "2026-02-22"
+  },
+  "events": [
+    {
+      "id": "evt--4500-mesopotamia-farming",
+      "year": -4500,
+      "title": "美索不達米亞農耕文化形成",
+      "actors": [],
+      "regions": ["中東"],
+      "summary": "兩河流域在水資源條件下出現組織性的農耕文化，成為後世文明核心地帶。"
+    },
+    {
+      "id": "evt--2686-old-kingdom-egypt",
+      "year": -2686,
+      "title": "古埃及古王國時期",
+      "actors": ["古埃及"],
+      "regions": ["北非"],
+      "summary": "尼羅河文明進入古王國時期，逐步形成高度集中治理與大型工程能力。"
+    },
+    {
+      "id": "evt--2133-middle-kingdom-egypt",
+      "year": -2133,
+      "title": "古埃及中王國時期",
+      "actors": ["古埃及"],
+      "regions": ["北非"],
+      "summary": "埃及在政治整合後重建秩序，中王國成為重要再統一階段。"
+    },
+    {
+      "id": "evt--770-spring-autumn",
+      "year": -770,
+      "title": "春秋時代開始",
+      "actors": ["周朝"],
+      "regions": ["東亞"],
+      "summary": "東周前期展開，諸侯勢力競逐，形成長期多中心政治格局。"
+    },
+    {
+      "id": "evt--753-roman-kingdom",
+      "year": -753,
+      "title": "羅馬王政時代起點",
+      "actors": ["羅馬王政時代"],
+      "regions": ["南歐"],
+      "summary": "羅馬傳統建城年份，成為後續羅馬政治共同體的重要起點。"
+    },
+    {
+      "id": "evt--550-achaemenid-rise",
+      "year": -550,
+      "title": "阿契美尼德帝國崛起",
+      "actors": ["阿契美尼德帝國"],
+      "regions": ["西亞"],
+      "summary": "居魯士二世建立波斯帝國，整合西亞多個舊王國。"
+    },
+    {
+      "id": "evt--509-roman-republic",
+      "year": -509,
+      "title": "羅馬共和國成立",
+      "actors": ["羅馬共和國"],
+      "regions": ["南歐"],
+      "summary": "羅馬王政終結，政體轉向共和制度，元老院與執政官政治形成。"
+    },
+    {
+      "id": "evt--330-achaemenid-fall",
+      "year": -330,
+      "title": "阿契美尼德帝國主要領土被征服",
+      "actors": ["阿契美尼德帝國"],
+      "regions": ["西亞"],
+      "summary": "亞歷山大東征重塑西亞政治秩序，終結波斯第一帝國主導地位。"
+    },
+    {
+      "id": "evt--247-parthian-empire",
+      "year": -247,
+      "title": "安息帝國建立",
+      "actors": ["安息帝國"],
+      "regions": ["西亞"],
+      "summary": "安息王朝在伊朗高原崛起，成為連接東西方商貿的重要政權。"
+    },
+    {
+      "id": "evt--224-sassanid-empire",
+      "year": -224,
+      "title": "薩珊王朝建立",
+      "actors": ["薩珊王朝"],
+      "regions": ["西亞"],
+      "summary": "薩珊帝國取代安息帝國，成為晚期古代西亞強權之一。"
+    },
+    {
+      "id": "evt--221-qin-unification",
+      "year": -221,
+      "title": "秦朝統一",
+      "actors": ["秦朝"],
+      "regions": ["東亞"],
+      "summary": "秦完成中國歷史上首次大一統，建立中央集權帝國。"
+    },
+    {
+      "id": "evt--112-han-nanyue",
+      "year": -112,
+      "title": "西漢滅南越",
+      "actors": ["西漢"],
+      "regions": ["東亞"],
+      "summary": "漢武帝南征完成對南越政治整合，擴張漢帝國版圖。"
+    },
+    {
+      "id": "evt--58-rome-gaul",
+      "year": -58,
+      "title": "羅馬進入高盧戰爭階段",
+      "actors": ["羅馬帝國"],
+      "regions": ["西歐"],
+      "summary": "羅馬軍事擴張深入高盧，改變西歐政治與城市分布結構。"
+    },
+    {
+      "id": "evt--44-caesar-assassination",
+      "year": -44,
+      "title": "凱撒遇刺",
+      "actors": ["羅馬帝國"],
+      "regions": ["南歐"],
+      "summary": "共和末期權力衝突激化，凱撒遇刺引發更深層內戰與政體轉型。"
+    },
+    {
+      "id": "evt-190-three-kingdoms",
+      "year": 190,
+      "title": "三國時代開端",
+      "actors": [],
+      "regions": ["東亞"],
+      "summary": "東漢秩序崩解，進入長期分裂與軍閥競爭。"
+    },
+    {
+      "id": "evt-313-edict-of-milan",
+      "year": 313,
+      "title": "米蘭敕令",
+      "actors": ["羅馬帝國"],
+      "regions": ["南歐"],
+      "summary": "羅馬政權承認基督教合法地位，宗教政策出現重大轉折。"
+    },
+    {
+      "id": "evt-380-christian-state-religion",
+      "year": 380,
+      "title": "基督教成為羅馬國教",
+      "actors": ["羅馬帝國"],
+      "regions": ["南歐"],
+      "summary": "國教化重塑羅馬政治與文化結構，影響中世紀歐洲發展。"
+    },
+    {
+      "id": "evt-452-venice-founded",
+      "year": 452,
+      "title": "威尼斯城市建立",
+      "actors": ["威尼斯共和"],
+      "regions": ["南歐"],
+      "summary": "潟湖聚落逐步成形，後來發展為重要海上共和國。",
+      "lat": 45.4408,
+      "lng": 12.3155
+    },
+    {
+      "id": "evt-476-fall-west-rome",
+      "year": 476,
+      "title": "西羅馬秩序終結",
+      "actors": ["羅馬帝國"],
+      "regions": ["南歐"],
+      "summary": "西羅馬政治結構瓦解，歐洲進入後羅馬重組期。"
+    },
+    {
+      "id": "evt-650-srivijaya",
+      "year": 650,
+      "title": "室利佛逝勢力興起",
+      "actors": [],
+      "regions": ["南亞"],
+      "summary": "海上貿易政權在蘇門答臘成長，影響馬來群島航線。"
+    },
+    {
+      "id": "evt-697-first-doge",
+      "year": 697,
+      "title": "威尼斯選出首位總督",
+      "actors": ["威尼斯共和"],
+      "regions": ["南歐"],
+      "summary": "威尼斯政治制度逐步成形，建立獨特共和治理架構。",
+      "lat": 45.4408,
+      "lng": 12.3155
+    },
+    {
+      "id": "evt-1204-fourth-crusade",
+      "year": 1204,
+      "title": "第四次十字軍攻佔君士坦丁堡",
+      "actors": ["威尼斯共和", "拜占庭"],
+      "regions": ["南歐", "西亞"],
+      "summary": "君士坦丁堡被攻陷，拜占庭政治秩序遭受重創。",
+      "lat": 41.0082,
+      "lng": 28.9784
+    },
+    {
+      "id": "evt-1293-majapahit",
+      "year": 1293,
+      "title": "滿者伯夷建立",
+      "actors": [],
+      "regions": ["南亞"],
+      "summary": "東爪哇政權形成，後續成為海上東南亞重要影響力中心。"
+    },
+    {
+      "id": "evt-1299-ottoman-founded",
+      "year": 1299,
+      "title": "鄂圖曼帝國建立",
+      "actors": ["鄂圖曼"],
+      "regions": ["中東", "東歐", "西亞"],
+      "summary": "奧斯曼一世建國，後續形成跨歐亞非的大帝國。"
+    },
+    {
+      "id": "evt-1337-hundred-years-war-start",
+      "year": 1337,
+      "title": "百年戰爭開端",
+      "actors": ["法蘭西王國", "英格蘭王國"],
+      "regions": ["英國", "西歐"],
+      "summary": "英法王位與領土爭議升高，長期戰爭開始。"
+    },
+    {
+      "id": "evt-1346-crecy",
+      "year": 1346,
+      "title": "克雷西戰役",
+      "actors": ["法蘭西王國", "英格蘭王國"],
+      "regions": ["英國", "西歐"],
+      "summary": "英軍取勝，改變百年戰爭階段性軍事平衡。"
+    },
+    {
+      "id": "evt-1415-agincourt",
+      "year": 1415,
+      "title": "阿金庫爾戰役",
+      "actors": ["法蘭西王國", "英格蘭王國"],
+      "regions": ["英國", "西歐"],
+      "summary": "英軍重大勝利，英法戰局再度被重塑。"
+    },
+    {
+      "id": "evt-1429-orleans",
+      "year": 1429,
+      "title": "奧爾良解圍",
+      "actors": ["法蘭西王國", "英格蘭王國"],
+      "regions": ["英國", "西歐"],
+      "summary": "法軍士氣與政治整合提升，戰爭走向逐步逆轉。"
+    },
+    {
+      "id": "evt-1453-fall-constantinople",
+      "year": 1453,
+      "title": "君士坦丁堡陷落",
+      "actors": ["拜占庭", "鄂圖曼"],
+      "regions": ["西亞"],
+      "summary": "鄂圖曼攻克君士坦丁堡，拜占庭帝國終結。",
+      "lat": 41.0082,
+      "lng": 28.9784
+    },
+    {
+      "id": "evt-1453-hundred-years-war-end",
+      "year": 1453,
+      "title": "百年戰爭結束",
+      "actors": ["法蘭西王國", "英格蘭王國"],
+      "regions": ["英國", "西歐"],
+      "summary": "卡斯提永戰役後，英軍主要撤離法國本土。"
+    },
+    {
+      "id": "evt-1492-granada",
+      "year": 1492,
+      "title": "格拉納達陷落",
+      "actors": [],
+      "regions": ["西歐"],
+      "summary": "伊比利亞半島政治版圖完成重大重組。"
+    },
+    {
+      "id": "evt-1516-ottoman-mamluk-syria",
+      "year": 1516,
+      "title": "鄂圖曼擊敗馬穆魯克並入主敘利亞",
+      "actors": ["鄂圖曼", "馬穆魯克"],
+      "regions": ["中東", "北非", "西亞"],
+      "summary": "火器與組織優勢改變中東力量對比。"
+    },
+    {
+      "id": "evt-1517-ottoman-egypt",
+      "year": 1517,
+      "title": "鄂圖曼征服埃及",
+      "actors": ["鄂圖曼", "馬穆魯克"],
+      "regions": ["中東", "北非", "西亞"],
+      "summary": "馬穆魯克統治終結，鄂圖曼勢力擴展至埃及與阿拉伯地區。",
+      "lat": 30.0444,
+      "lng": 31.2357
+    },
+    {
+      "id": "evt-1573-muromachi-end",
+      "year": 1573,
+      "title": "室町幕府滅亡",
+      "actors": ["幕府時代"],
+      "regions": ["東亞"],
+      "summary": "織田信長放逐足利義昭，日本進入安土桃山時代。"
+    },
+    {
+      "id": "evt-1582-honnoji",
+      "year": 1582,
+      "title": "本能寺之變",
+      "actors": ["幕府時代"],
+      "regions": ["東亞"],
+      "summary": "織田信長遭明智光秀兵變襲擊，權力重組加速。"
+    },
+    {
+      "id": "evt-1600-sekigahara",
+      "year": 1600,
+      "title": "關原之戰",
+      "actors": ["幕府時代"],
+      "regions": ["東亞"],
+      "summary": "德川家康取勝，奠定全國軍政優勢。"
+    },
+    {
+      "id": "evt-1603-tokugawa-shogunate",
+      "year": 1603,
+      "title": "江戶幕府建立",
+      "actors": ["幕府時代"],
+      "regions": ["東亞"],
+      "summary": "德川家康受封征夷大將軍，日本進入長期幕藩體制。"
+    },
+    {
+      "id": "evt-1683-siege-vienna",
+      "year": 1683,
+      "title": "維也納之戰",
+      "actors": ["哈布斯堡王朝", "鄂圖曼"],
+      "regions": ["東歐", "西亞"],
+      "summary": "鄂圖曼在維也納受挫，歐洲戰略平衡轉向。",
+      "lat": 48.2082,
+      "lng": 16.3738
+    },
+    {
+      "id": "evt-1699-treaty-loss-ottoman",
+      "year": 1699,
+      "title": "鄂圖曼在中東歐失地",
+      "actors": ["哈布斯堡王朝", "鄂圖曼"],
+      "regions": ["東歐", "西亞"],
+      "summary": "奧地利勢力上升，鄂圖曼歐洲影響力下降。"
+    },
+    {
+      "id": "evt-1721-russian-empire",
+      "year": 1721,
+      "title": "俄羅斯帝國成立",
+      "actors": ["俄羅斯帝國"],
+      "regions": ["東歐"],
+      "summary": "彼得一世改稱全俄羅斯皇帝，帝國體制確立。"
+    },
+    {
+      "id": "evt-1797-venice-fall",
+      "year": 1797,
+      "title": "威尼斯共和國終結",
+      "actors": ["威尼斯共和", "法蘭西第一帝國"],
+      "regions": ["南歐"],
+      "summary": "拿破崙進軍北意大利後，威尼斯共和國被吞併。",
+      "lat": 45.4408,
+      "lng": 12.3155
+    },
+    {
+      "id": "evt-1830-greek-independence",
+      "year": 1830,
+      "title": "希臘獨立",
+      "actors": ["鄂圖曼"],
+      "regions": ["南歐", "西亞"],
+      "summary": "在歐洲列強斡旋下，鄂圖曼承認希臘獨立。",
+      "lat": 37.9838,
+      "lng": 23.7275
+    },
+    {
+      "id": "evt-1854-black-ships",
+      "year": 1854,
+      "title": "黑船來航與日本開港",
+      "actors": ["幕府時代"],
+      "regions": ["北美", "東亞"],
+      "summary": "美國海軍壓力促使日本結束鎖國，重塑東亞對外關係。",
+      "lat": 35.2802,
+      "lng": 139.6671
+    },
+    {
+      "id": "evt-1914-ottoman-ww1",
+      "year": 1914,
+      "title": "鄂圖曼加入第一次世界大戰",
+      "actors": ["奧匈帝國", "鄂圖曼"],
+      "regions": ["南歐", "東歐", "西亞", "西歐"],
+      "summary": "鄂圖曼加入中央同盟，參與高加索、巴勒斯坦與美索不達米亞等戰場。"
+    },
+    {
+      "id": "evt-1915-armenian-genocide",
+      "year": 1915,
+      "title": "亞美尼亞種族滅絕",
+      "actors": ["俄羅斯帝國", "鄂圖曼"],
+      "regions": ["東歐", "西亞"],
+      "summary": "戰爭背景下，鄂圖曼對亞美尼亞人進行逮捕、驅逐與屠殺，造成大規模死亡。"
+    }
+  ]
+}
