@@ -7,6 +7,9 @@
  *
  * Script Properties (for GitHub publish):
  * GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH, GITHUB_PATH, GITHUB_TOKEN
+ *
+ * Optional Script Property:
+ * EVENTS_SHEET (default: events)
  */
 
 const EVENTS_SHEET = 'events';
@@ -21,11 +24,18 @@ const DEFAULT_GITHUB_CONFIG = {
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('De Book')
+    .addItem('Initialize events Sheet', 'initializeEventsSheet')
     .addItem('Validate Rows', 'validateSheet')
     .addItem('Preview JSON (Log)', 'previewJson')
     .addItem('Setup Default GitHub Config', 'setupDefaultGitHubConfig')
     .addItem('Publish events.json to GitHub', 'publishToGitHub')
     .addToUi();
+}
+
+function initializeEventsSheet() {
+  const sheet = getEventsSheet_({ createIfMissing: true });
+  ensureHeader_(sheet);
+  SpreadsheetApp.getUi().alert(`Sheet '${sheet.getName()}' is ready with the required header row.`);
 }
 
 function previewJson() {
@@ -34,10 +44,8 @@ function previewJson() {
 }
 
 function validateSheet() {
-  const sheet = SpreadsheetApp.getActive().getSheetByName(EVENTS_SHEET);
-  if (!sheet) {
-    throw new Error(`Sheet '${EVENTS_SHEET}' not found.`);
-  }
+  const sheet = getEventsSheet_();
+  ensureHeader_(sheet);
 
   const [header, ...rows] = readTable_(sheet);
   const missing = REQUIRED_COLUMNS.filter((column) => !header.includes(column));
@@ -141,17 +149,15 @@ function setupDefaultGitHubConfig() {
 }
 
 function buildPayload_() {
-  const sheet = SpreadsheetApp.getActive().getSheetByName(EVENTS_SHEET);
-  if (!sheet) {
-    throw new Error(`Sheet '${EVENTS_SHEET}' not found.`);
-  }
+  const sheet = getEventsSheet_();
+  ensureHeader_(sheet);
 
   const [header, ...rows] = readTable_(sheet);
   const col = indexByName_(header);
 
   const missing = REQUIRED_COLUMNS.filter((column) => !(column in col));
   if (missing.length) {
-    throw new Error(`Missing columns in sheet '${EVENTS_SHEET}': ${missing.join(', ')}`);
+    throw new Error(`Missing columns in sheet '${sheet.getName()}': ${missing.join(', ')}`);
   }
 
   const events = rows
@@ -168,6 +174,42 @@ function buildPayload_() {
     },
     events: events
   };
+}
+
+function getEventsSheet_(options) {
+  const opts = options || {};
+  const sheetName = getEventsSheetName_();
+  const ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (!sheet) {
+    const target = sheetName.toLowerCase();
+    sheet = ss.getSheets().find((s) => s.getName().toLowerCase() === target) || null;
+  }
+
+  if (!sheet && opts.createIfMissing) {
+    sheet = ss.insertSheet(sheetName);
+  }
+
+  if (!sheet) {
+    throw new Error(
+      `Sheet '${sheetName}' not found. Create it manually, set Script Property EVENTS_SHEET, or run 'De Book -> Initialize events Sheet'.`
+    );
+  }
+
+  return sheet;
+}
+
+function getEventsSheetName_() {
+  return PropertiesService.getScriptProperties().getProperty('EVENTS_SHEET') || EVENTS_SHEET;
+}
+
+function ensureHeader_(sheet) {
+  const current = sheet.getRange(1, 1, 1, REQUIRED_COLUMNS.length).getValues()[0];
+  const isBlank = current.every((cell) => String(cell || '').trim() === '');
+  if (isBlank) {
+    sheet.getRange(1, 1, 1, REQUIRED_COLUMNS.length).setValues([REQUIRED_COLUMNS]);
+  }
 }
 
 function normalizeRow_(row, col) {
@@ -209,7 +251,7 @@ function indexByName_(header) {
 function readTable_(sheet) {
   const data = sheet.getDataRange().getValues();
   if (!data.length) {
-    throw new Error(`Sheet '${EVENTS_SHEET}' is empty.`);
+    throw new Error(`Sheet '${sheet.getName()}' is empty.`);
   }
   const header = data[0].map((h) => String(h || '').trim());
   return [header, ...data.slice(1)];

@@ -42,13 +42,18 @@ Required Script Property:
 
 - `GITHUB_TOKEN` (PAT with repository write access)
 
+Optional Script Property:
+
+- `EVENTS_SHEET` (if your data tab is not named `events`)
+
 ## 4) First Run
 
 From Apps Script editor:
 
-1. Run `validateSheet`
-2. Run `setupDefaultGitHubConfig` (or use menu action)
-3. Run `publishToGitHub`
+1. Run `initializeEventsSheet` (or menu `De Book -> Initialize events Sheet`)
+2. Run `validateSheet`
+3. Run `setupDefaultGitHubConfig` (or use menu action)
+4. Run `publishToGitHub`
 
 Approve permissions when prompted.
 
