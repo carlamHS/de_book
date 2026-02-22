@@ -160,12 +160,23 @@ label {
 }
 
 input[type="search"],
+input[type="text"],
+input[type="number"],
+input[type="url"],
+input[type="password"],
+textarea,
 select {
   border: 1px solid rgba(29, 42, 56, 0.22);
   border-radius: 10px;
   padding: 0.48rem 0.55rem;
   background: #fff;
   color: var(--ink);
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 92px;
 }
 
 .stats {
@@ -178,6 +189,42 @@ select {
 
 .stats p {
   margin: 0.2rem 0;
+}
+
+.submit-box {
+  margin-top: 0.2rem;
+  border-top: 1px solid rgba(29, 42, 56, 0.1);
+  padding-top: 0.65rem;
+}
+
+.submit-box summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.submit-help {
+  margin: 0.55rem 0 0.2rem;
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+}
+
+.submit-grid {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+}
+
+.submit-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.status-line {
+  color: var(--ink-muted);
+  font-size: 0.82rem;
 }
 
 #map {

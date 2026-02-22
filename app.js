@@ -1,4 +1,5 @@
 const DATA_URL = "./data/events.json";
+const APPS_SCRIPT_ENDPOINT_DEFAULT = "";
 
 const REGION_CENTROIDS = {
   東亞: [35.0, 105.0],
@@ -33,6 +34,18 @@ const visibleCount = document.getElementById("visibleCount");
 const totalCount = document.getElementById("totalCount");
 const modeLabel = document.getElementById("modeLabel");
 const syncStatus = document.getElementById("syncStatus");
+const eventSubmitForm = document.getElementById("eventSubmitForm");
+const endpointInput = document.getElementById("endpointInput");
+const submitKeyInput = document.getElementById("submitKeyInput");
+const inputYear = document.getElementById("inputYear");
+const inputTitle = document.getElementById("inputTitle");
+const inputActors = document.getElementById("inputActors");
+const inputRegions = document.getElementById("inputRegions");
+const inputLat = document.getElementById("inputLat");
+const inputLng = document.getElementById("inputLng");
+const inputSources = document.getElementById("inputSources");
+const inputSummary = document.getElementById("inputSummary");
+const submitStatus = document.getElementById("submitStatus");
 
 let allEvents = [];
 let markerLayer = L.layerGroup().addTo(map);
@@ -44,6 +57,23 @@ let playTimer = null;
 function formatYear(year) {
   if (Number.isNaN(year)) return "-";
   return year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
+}
+
+function splitCsvInput(value) {
+  return String(value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeEvent(event) {
+  return {
+    ...event,
+    year: Number(event.year),
+    actors: Array.isArray(event.actors) ? event.actors : splitCsvInput(event.actors),
+    regions: Array.isArray(event.regions) ? event.regions : splitCsvInput(event.regions),
+    sources: Array.isArray(event.sources) ? event.sources : splitCsvInput(event.sources)
+  };
 }
 
 function eventCoordinate(event) {
@@ -72,6 +102,9 @@ function activeYear() {
 }
 
 function fillOptions() {
+  const previousActor = actorFilter.value;
+  const previousRegion = regionFilter.value;
+
   const actors = new Set();
   const regions = new Set();
   allEvents.forEach((event) => {
@@ -79,6 +112,7 @@ function fillOptions() {
     (event.regions || []).forEach((x) => regions.add(x));
   });
 
+  actorFilter.innerHTML = '<option value="">All actors</option>';
   [...actors].sort().forEach((actor) => {
     const option = document.createElement("option");
     option.value = actor;
@@ -86,12 +120,16 @@ function fillOptions() {
     actorFilter.appendChild(option);
   });
 
+  regionFilter.innerHTML = '<option value="">All regions</option>';
   [...regions].sort().forEach((region) => {
     const option = document.createElement("option");
     option.value = region;
     option.textContent = region;
     regionFilter.appendChild(option);
   });
+
+  if (previousActor && actors.has(previousActor)) actorFilter.value = previousActor;
+  if (previousRegion && regions.has(previousRegion)) regionFilter.value = previousRegion;
 }
 
 function matchesFilters(event) {
@@ -221,8 +259,128 @@ function handlePlayToggle() {
   }, 950);
 }
 
+function setSubmitStatus(message, isError) {
+  if (!submitStatus) return;
+  submitStatus.textContent = message;
+  submitStatus.style.color = isError ? "#8a1f11" : "#295b2d";
+}
+
+async function handleEventSubmit(event) {
+  event.preventDefault();
+  if (!eventSubmitForm) return;
+
+  const endpoint = (endpointInput.value || "").trim();
+  const submitKey = (submitKeyInput.value || "").trim();
+  const year = Number(inputYear.value);
+  const title = (inputTitle.value || "").trim();
+  const summary = (inputSummary.value || "").trim();
+
+  if (!endpoint) {
+    setSubmitStatus("Missing Apps Script URL.", true);
+    return;
+  }
+  if (!submitKey) {
+    setSubmitStatus("Missing submit key.", true);
+    return;
+  }
+  if (!Number.isFinite(year)) {
+    setSubmitStatus("Year must be a number.", true);
+    return;
+  }
+  if (!title) {
+    setSubmitStatus("Title is required.", true);
+    return;
+  }
+  if (!summary) {
+    setSubmitStatus("Summary is required.", true);
+    return;
+  }
+
+  const lat = inputLat.value === "" ? null : Number(inputLat.value);
+  const lng = inputLng.value === "" ? null : Number(inputLng.value);
+  if (lat !== null && !Number.isFinite(lat)) {
+    setSubmitStatus("Latitude must be a number.", true);
+    return;
+  }
+  if (lng !== null && !Number.isFinite(lng)) {
+    setSubmitStatus("Longitude must be a number.", true);
+    return;
+  }
+
+  const payload = {
+    submit_key: submitKey,
+    event: {
+      year: year,
+      title: title,
+      summary: summary,
+      actors: splitCsvInput(inputActors.value),
+      regions: splitCsvInput(inputRegions.value),
+      sources: splitCsvInput(inputSources.value)
+    }
+  };
+  if (lat !== null) payload.event.lat = lat;
+  if (lng !== null) payload.event.lng = lng;
+
+  setSubmitStatus("Submitting...", false);
+  try {
+    const body = new URLSearchParams();
+    body.set("payload", JSON.stringify(payload));
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body: body.toString()
+    });
+
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { ok: response.ok, raw: text };
+    }
+
+    if (!response.ok || !data.ok) {
+      const errMsg = data && data.error ? data.error : `Submit failed (${response.status})`;
+      throw new Error(errMsg);
+    }
+
+    if (data.event) {
+      const created = normalizeEvent(data.event);
+      if (Number.isFinite(created.year)) {
+        allEvents.push(created);
+        fillOptions();
+        configureTimeline();
+        currentYearIndex = timelineYears.length - 1;
+        yearSlider.value = String(currentYearIndex);
+        render();
+      }
+    }
+
+    localStorage.setItem("debook_submit_endpoint", endpoint);
+    inputTitle.value = "";
+    inputSummary.value = "";
+    inputLat.value = "";
+    inputLng.value = "";
+    inputSources.value = "";
+    setSubmitStatus(
+      data.auto_published
+        ? "Event submitted and auto-published."
+        : "Event submitted. Run publishToGitHub or wait for daily trigger.",
+      false
+    );
+  } catch (error) {
+    setSubmitStatus(String(error.message || error), true);
+  }
+}
+
 async function boot() {
   try {
+    if (endpointInput) {
+      endpointInput.value =
+        localStorage.getItem("debook_submit_endpoint") || APPS_SCRIPT_ENDPOINT_DEFAULT || "";
+    }
     const response = await fetch(DATA_URL, { cache: "no-store" });
     if (!response.ok) throw new Error(`Failed to load ${DATA_URL}: ${response.status}`);
     const payload = await response.json();
@@ -231,12 +389,7 @@ async function boot() {
       syncStatus.textContent = generatedAt ? `Last synced: ${generatedAt}` : "Last synced: unknown";
     }
     allEvents = (payload.events || [])
-      .map((event) => ({
-        ...event,
-        year: Number(event.year),
-        actors: Array.isArray(event.actors) ? event.actors : [],
-        regions: Array.isArray(event.regions) ? event.regions : []
-      }))
+      .map(normalizeEvent)
       .filter((event) => Number.isFinite(event.year));
 
     fillOptions();
@@ -259,5 +412,16 @@ cumulativeToggle.addEventListener("change", render);
 searchInput.addEventListener("input", render);
 actorFilter.addEventListener("change", render);
 regionFilter.addEventListener("change", render);
+if (eventSubmitForm) {
+  eventSubmitForm.addEventListener("submit", handleEventSubmit);
+}
+if (endpointInput) {
+  endpointInput.addEventListener("change", () => {
+    const value = endpointInput.value.trim();
+    if (value) {
+      localStorage.setItem("debook_submit_endpoint", value);
+    }
+  });
+}
 
 boot();

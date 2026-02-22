@@ -67,6 +67,7 @@ The app reads from `data/events.json` and supports:
 - cumulative view mode
 - historical event list + map rendering
 - `Last synced` status from `meta.generated_at`
+- admin event input form (submits to Apps Script `doPost`)
 
 ### Option 2: Deploy As A Public Web App (GitHub Pages)
 
@@ -81,7 +82,7 @@ Follow `docs/DEPLOYMENT.md`.
 De Book now follows this architecture:
 
 1. Google Sheets as editable event database
-2. Apps Script to validate rows and publish JSON
+2. Apps Script to validate rows, accept admin event submissions, and publish JSON
 3. GitHub repository as versioned storage
 4. GitHub Pages as public website
 

@@ -74,6 +74,63 @@
           <p><span id="visibleCount">0</span> events shown</p>
           <p><span id="totalCount">0</span> events total</p>
         </div>
+        <details class="submit-box">
+          <summary>Admin: Add Event</summary>
+          <p class="submit-help">
+            Submit one event to Google Sheets via Apps Script Web App endpoint.
+          </p>
+          <form id="eventSubmitForm" class="submit-grid">
+            <label>
+              Apps Script URL
+              <input
+                id="endpointInput"
+                type="url"
+                placeholder="https://script.google.com/macros/s/.../exec"
+                required
+              />
+            </label>
+            <label>
+              Submit Key
+              <input id="submitKeyInput" type="password" placeholder="EVENT_SUBMIT_KEY" required />
+            </label>
+            <label>
+              Year
+              <input id="inputYear" type="number" placeholder="1915" required />
+            </label>
+            <label>
+              Title
+              <input id="inputTitle" type="text" placeholder="亞美尼亞種族滅絕" required />
+            </label>
+            <label>
+              Actors (comma-separated)
+              <input id="inputActors" type="text" placeholder="俄羅斯帝國, 鄂圖曼" />
+            </label>
+            <label>
+              Regions (comma-separated)
+              <input id="inputRegions" type="text" placeholder="東歐, 西亞" />
+            </label>
+            <label>
+              Latitude (optional)
+              <input id="inputLat" type="number" step="any" placeholder="39.9334" />
+            </label>
+            <label>
+              Longitude (optional)
+              <input id="inputLng" type="number" step="any" placeholder="32.8597" />
+            </label>
+            <label>
+              Sources (comma-separated URLs, optional)
+              <input id="inputSources" type="text" placeholder="https://..." />
+            </label>
+            <label>
+              Summary
+              <textarea id="inputSummary" rows="4" placeholder="Historical context..." required></textarea>
+            </label>
+            <div class="submit-actions">
+              <button id="submitEventBtn" type="submit">Submit Event</button>
+              <span id="submitStatus" class="status-line" aria-live="polite"></span>
+            </div>
+          </form>
+        </details>
       </section>
 
       <section class="panel panel--map">

@@ -52,3 +52,14 @@ Use sheet menu:
 - `De Book -> Setup Daily Auto Publish`
 
 This creates a daily time-based trigger for `publishToGitHubByTrigger`.
+
+## Optional: Web App Event Submission
+
+1. In Apps Script set Script Property:
+   - `EVENT_SUBMIT_KEY=<your-secret-key>`
+2. (Optional) Set:
+   - `AUTO_PUBLISH_ON_SUBMIT=true`
+3. Deploy Apps Script as Web App (`Execute as: Me`, `Who has access: Anyone`).
+4. Copy deployment URL and paste it into the web app sidebar field:
+   - `Admin: Add Event -> Apps Script URL`
+5. Enter submit key and event fields, then submit.

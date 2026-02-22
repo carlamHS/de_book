@@ -10,6 +10,8 @@
  *
  * Optional Script Property:
  * EVENTS_SHEET (default: events)
+ * EVENT_SUBMIT_KEY (required for web app event submission)
+ * AUTO_PUBLISH_ON_SUBMIT (true/false, default false)
  */
 
 const EVENTS_SHEET = 'events';
@@ -88,6 +90,53 @@ function doGet() {
   return ContentService
     .createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    const payload = parsePostPayload_(e);
+    const key = PropertiesService.getScriptProperties().getProperty('EVENT_SUBMIT_KEY');
+    if (!key) {
+      return jsonResponse_({
+        ok: false,
+        error: 'Missing Script Property: EVENT_SUBMIT_KEY'
+      });
+    }
+
+    if (!payload.submit_key || payload.submit_key !== key) {
+      return jsonResponse_({
+        ok: false,
+        error: 'Invalid submit key.'
+      });
+    }
+
+    if (!payload.event) {
+      return jsonResponse_({
+        ok: false,
+        error: 'Missing payload.event.'
+      });
+    }
+
+    const created = appendEventRow_(payload.event);
+    const autoPublish = String(
+      PropertiesService.getScriptProperties().getProperty('AUTO_PUBLISH_ON_SUBMIT') || ''
+    ).toLowerCase() === 'true';
+
+    if (autoPublish) {
+      publishToGitHubInternal_();
+    }
+
+    return jsonResponse_({
+      ok: true,
+      event: created,
+      auto_published: autoPublish
+    });
+  } catch (error) {
+    return jsonResponse_({
+      ok: false,
+      error: String(error.message || error)
+    });
+  }
 }
 
 function publishToGitHub() {
@@ -277,6 +326,118 @@ function ensureHeader_(sheet) {
   }
 }
 
+function parsePostPayload_(e) {
+  if (!e) return {};
+
+  if (e.postData && e.postData.contents) {
+    try {
+      return JSON.parse(e.postData.contents);
+    } catch (error) {
+      // Ignore and fallback to form payload.
+    }
+  }
+
+  if (e.parameter && e.parameter.payload) {
+    return JSON.parse(e.parameter.payload);
+  }
+
+  return {};
+}
+
+function appendEventRow_(rawEvent) {
+  const sheet = getEventsSheet_({ createIfMissing: true });
+  ensureHeader_(sheet);
+
+  const [header, ...rows] = readTable_(sheet);
+  const col = indexByName_(header);
+  const missing = REQUIRED_COLUMNS.filter((column) => !(column in col));
+  if (missing.length) {
+    throw new Error(`Missing columns in sheet '${sheet.getName()}': ${missing.join(', ')}`);
+  }
+
+  const year = Number(rawEvent.year);
+  if (!Number.isFinite(year)) {
+    throw new Error('Event year must be numeric.');
+  }
+
+  const title = String(rawEvent.title || '').trim();
+  if (!title) {
+    throw new Error('Event title is required.');
+  }
+
+  const summary = String(rawEvent.summary || '').trim();
+  if (!summary) {
+    throw new Error('Event summary is required.');
+  }
+
+  const existingIds = new Set(
+    rows
+      .map((row) => String(row[col.id] || '').trim())
+      .filter(Boolean)
+  );
+
+  let id = String(rawEvent.id || '').trim();
+  if (!id) {
+    id = generateEventId_(year, title);
+  }
+  if (existingIds.has(id)) {
+    throw new Error(`Event id already exists: ${id}`);
+  }
+
+  const actors = parseListFlexible_(rawEvent.actors);
+  const regions = parseListFlexible_(rawEvent.regions);
+  const sources = parseListFlexible_(rawEvent.sources);
+
+  const lat = toNumberOrNull_(rawEvent.lat);
+  const lng = toNumberOrNull_(rawEvent.lng);
+
+  const newRow = ['', '', '', '', '', '', '', '', ''];
+  newRow[col.id] = id;
+  newRow[col.year] = year;
+  newRow[col.title] = title;
+  newRow[col.actors] = actors.join(', ');
+  newRow[col.regions] = regions.join(', ');
+  newRow[col.summary] = summary;
+  newRow[col.lat] = lat === null ? '' : lat;
+  newRow[col.lng] = lng === null ? '' : lng;
+  newRow[col.sources] = sources.join(', ');
+
+  sheet.appendRow(newRow);
+
+  const event = {
+    id: id,
+    year: year,
+    title: title,
+    actors: actors,
+    regions: regions,
+    summary: summary
+  };
+  if (lat !== null) event.lat = lat;
+  if (lng !== null) event.lng = lng;
+  if (sources.length) event.sources = sources;
+
+  return event;
+}
+
+function parseListFlexible_(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item || '').trim()).filter(Boolean);
+  }
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function generateEventId_(year, title) {
+  const slug = String(title || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 24) || 'event';
+  return `evt-${year}-${slug}-${Date.now().toString().slice(-6)}`;
+}
+
 function normalizeRow_(row, col) {
   const event = {
     id: String(row[col.id]).trim(),
@@ -349,4 +510,10 @@ function fetchGitHubFile_(apiUrl, token, branch) {
     throw new Error(`GitHub read failed (${status}): ${response.getContentText()}`);
   }
   return JSON.parse(response.getContentText());
+}
+
+function jsonResponse_(payload) {
+  return ContentService
+    .createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
 }

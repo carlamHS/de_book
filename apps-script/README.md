@@ -46,6 +46,8 @@ Optional Script Property:
 
 - `EVENTS_SHEET` (if your data tab is not named `events`)
 - `DAILY_PUBLISH_HOUR` (0-23, optional; default `9`)
+- `EVENT_SUBMIT_KEY` (required for web app event input)
+- `AUTO_PUBLISH_ON_SUBMIT` (`true` or `false`, optional; default `false`)
 
 ## 4) First Run
 
@@ -69,6 +71,24 @@ From sheet menu:
 By default trigger runs around `09:00` (script timezone).  
 Set Script Property `DAILY_PUBLISH_HOUR` to change this.
 
-## 6) Optional: JSON API Endpoint
+## 6) Optional: Web App Event Input Endpoint
 
-Deploy as Web App (Execute as: Me, Access: Anyone with link) and use `doGet` as a read-only JSON endpoint.
+This project supports event creation through `doPost` for the web UI admin form.
+
+Deploy as Web App:
+
+1. Apps Script -> Deploy -> New deployment
+2. Type: `Web app`
+3. Execute as: `Me`
+4. Who has access: `Anyone`
+5. Copy the deployed URL (`.../exec`)
+
+Then in your website admin form:
+
+- set `Apps Script URL` to that deployed URL
+- set `Submit Key` to your `EVENT_SUBMIT_KEY` value
+
+Security note:
+
+- `EVENT_SUBMIT_KEY` is required for every submit request
+- do not hardcode the key into public source code
