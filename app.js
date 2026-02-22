@@ -32,6 +32,7 @@ const eventList = document.getElementById("eventList");
 const visibleCount = document.getElementById("visibleCount");
 const totalCount = document.getElementById("totalCount");
 const modeLabel = document.getElementById("modeLabel");
+const syncStatus = document.getElementById("syncStatus");
 
 let allEvents = [];
 let markerLayer = L.layerGroup().addTo(map);
@@ -225,6 +226,10 @@ async function boot() {
     const response = await fetch(DATA_URL, { cache: "no-store" });
     if (!response.ok) throw new Error(`Failed to load ${DATA_URL}: ${response.status}`);
     const payload = await response.json();
+    if (syncStatus) {
+      const generatedAt = payload.meta && payload.meta.generated_at ? payload.meta.generated_at : null;
+      syncStatus.textContent = generatedAt ? `Last synced: ${generatedAt}` : "Last synced: unknown";
+    }
     allEvents = (payload.events || [])
       .map((event) => ({
         ...event,
@@ -240,6 +245,7 @@ async function boot() {
   } catch (error) {
     console.error(error);
     yearLabel.textContent = "Error";
+    if (syncStatus) syncStatus.textContent = "Last synced: unavailable";
     eventList.innerHTML = `<li class="event-empty">${String(error.message || error)}</li>`;
   }
 }

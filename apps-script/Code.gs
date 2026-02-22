@@ -14,6 +14,8 @@
 
 const EVENTS_SHEET = 'events';
 const REQUIRED_COLUMNS = ['id', 'year', 'title', 'actors', 'regions', 'summary', 'lat', 'lng', 'sources'];
+const DAILY_TRIGGER_HANDLER = 'publishToGitHubByTrigger';
+const DEFAULT_DAILY_TRIGGER_HOUR = 9;
 const DEFAULT_GITHUB_CONFIG = {
   owner: 'carlamHS',
   repo: 'de_book',
@@ -29,6 +31,10 @@ function onOpen() {
     .addItem('Preview JSON (Log)', 'previewJson')
     .addItem('Setup Default GitHub Config', 'setupDefaultGitHubConfig')
     .addItem('Publish events.json to GitHub', 'publishToGitHub')
+    .addSeparator()
+    .addItem('Setup Daily Auto Publish', 'setupDailyPublishTrigger')
+    .addItem('Remove Daily Auto Publish', 'removeDailyPublishTrigger')
+    .addItem('Show Auto Publish Status', 'showPublishTriggerStatus')
     .addToUi();
 }
 
@@ -85,6 +91,20 @@ function doGet() {
 }
 
 function publishToGitHub() {
+  const result = publishToGitHubInternal_();
+  SpreadsheetApp.getUi().alert(
+    `Published to GitHub successfully.\n\nRepo: ${result.owner}/${result.repo}\nPath: ${result.path}\nBranch: ${result.branch}`
+  );
+}
+
+function publishToGitHubByTrigger() {
+  const result = publishToGitHubInternal_();
+  Logger.log(
+    `publishToGitHubByTrigger: success ${result.owner}/${result.repo} ${result.path} (${result.branch})`
+  );
+}
+
+function publishToGitHubInternal_() {
   const props = PropertiesService.getScriptProperties();
   const owner = props.getProperty('GITHUB_OWNER') || DEFAULT_GITHUB_CONFIG.owner;
   const repo = props.getProperty('GITHUB_REPO') || DEFAULT_GITHUB_CONFIG.repo;
@@ -132,7 +152,7 @@ function publishToGitHub() {
     throw new Error(`GitHub publish failed (${status}): ${text}`);
   }
 
-  SpreadsheetApp.getUi().alert('Published to GitHub successfully.');
+  return { owner: owner, repo: repo, branch: branch, path: path };
 }
 
 function setupDefaultGitHubConfig() {
@@ -146,6 +166,51 @@ function setupDefaultGitHubConfig() {
   SpreadsheetApp.getUi().alert(
     'Default GitHub config saved. Please set GITHUB_TOKEN in Script Properties, then run Publish.'
   );
+}
+
+function setupDailyPublishTrigger() {
+  removeDailyPublishTrigger_();
+  const hour = getDailyPublishHour_();
+  ScriptApp.newTrigger(DAILY_TRIGGER_HANDLER)
+    .timeBased()
+    .everyDays(1)
+    .atHour(hour)
+    .create();
+  SpreadsheetApp.getUi().alert(
+    `Daily auto publish trigger created at around ${String(hour).padStart(2, '0')}:00 script timezone.`
+  );
+}
+
+function removeDailyPublishTrigger() {
+  const removed = removeDailyPublishTrigger_();
+  SpreadsheetApp.getUi().alert(removed ? 'Daily auto publish trigger removed.' : 'No daily auto publish trigger found.');
+}
+
+function showPublishTriggerStatus() {
+  const triggers = ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === DAILY_TRIGGER_HANDLER);
+  if (!triggers.length) {
+    SpreadsheetApp.getUi().alert('Auto publish status: not configured.');
+    return;
+  }
+  const hour = getDailyPublishHour_();
+  SpreadsheetApp.getUi().alert(
+    `Auto publish status: configured.\nHandler: ${DAILY_TRIGGER_HANDLER}\nApprox time: ${String(hour).padStart(2, '0')}:00 daily`
+  );
+}
+
+function removeDailyPublishTrigger_() {
+  const triggers = ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === DAILY_TRIGGER_HANDLER);
+  triggers.forEach((trigger) => ScriptApp.deleteTrigger(trigger));
+  return triggers.length > 0;
+}
+
+function getDailyPublishHour_() {
+  const raw = PropertiesService.getScriptProperties().getProperty('DAILY_PUBLISH_HOUR');
+  const parsed = Number(raw);
+  if (Number.isInteger(parsed) && parsed >= 0 && parsed <= 23) {
+    return parsed;
+  }
+  return DEFAULT_DAILY_TRIGGER_HOUR;
 }
 
 function buildPayload_() {

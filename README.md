@@ -66,6 +66,7 @@ The app reads from `data/events.json` and supports:
 - actor/region filters
 - cumulative view mode
 - historical event list + map rendering
+- `Last synced` status from `meta.generated_at`
 
 ### Option 2: Deploy As A Public Web App (GitHub Pages)
 

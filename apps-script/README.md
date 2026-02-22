@@ -45,6 +45,7 @@ Required Script Property:
 Optional Script Property:
 
 - `EVENTS_SHEET` (if your data tab is not named `events`)
+- `DAILY_PUBLISH_HOUR` (0-23, optional; default `9`)
 
 ## 4) First Run
 
@@ -57,6 +58,17 @@ From Apps Script editor:
 
 Approve permissions when prompted.
 
-## 5) Optional: JSON API Endpoint
+## 5) Optional: Daily Auto Publish
+
+From sheet menu:
+
+- `De Book -> Setup Daily Auto Publish`
+- `De Book -> Show Auto Publish Status`
+- `De Book -> Remove Daily Auto Publish`
+
+By default trigger runs around `09:00` (script timezone).  
+Set Script Property `DAILY_PUBLISH_HOUR` to change this.
+
+## 6) Optional: JSON API Endpoint
 
 Deploy as Web App (Execute as: Me, Access: Anyone with link) and use `doGet` as a read-only JSON endpoint.

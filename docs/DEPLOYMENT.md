@@ -45,6 +45,10 @@ https://<OWNER>.github.io/<REPO>/
 3. Run `publishToGitHub`.
 4. Refresh GitHub Pages site.
 
-## Suggested Next Step
+## Optional Automation
 
-Add a daily Apps Script trigger for `publishToGitHub` so your site updates automatically.
+Use sheet menu:
+
+- `De Book -> Setup Daily Auto Publish`
+
+This creates a daily time-based trigger for `publishToGitHubByTrigger`.
